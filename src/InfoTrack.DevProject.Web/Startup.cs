@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using InfoTrack.DevProject.Application.Interfaces;
+﻿using InfoTrack.DevProject.Application.Interfaces;
 using InfoTrack.DevProject.Application.Services;
 using InfoTrack.DevProject.Infrastructure.GoogleSearch;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace InfoTrack.DevProject.Web
 {
