@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InfoTrack.DevProject.Web.Models
 {
-    public class GoogleSearchViewModel
+    public class SearchViewModel
     {
-        [Required(ErrorMessage = "Domain url is required")]
         [Display(Name = "Domain Url")]
         public string DomainUrl { get; set; }
 
-        [Required(ErrorMessage = "Search text is required")]
         [Display(Name = "Search Text")]
         public string SearchText { get; set; }
+
+        public string Rankings { get; set; }
     }
 }

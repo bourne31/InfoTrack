@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using InfoTrack.DevProject.Application.Interfaces;
-using InfoTrack.DevProject.Domain.Google;
+using InfoTrack.DevProject.Domain.Search;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace InfoTrack.DevProject.Infrastructure.GoogleSearch
 {
-    public class GoogleSearchClient : IGoogleSearchClient
+    public class GoogleSearchClient : ISearchClient
     {
         private const string RequestUriTemplate = "search?q={0}&start={1}";
         private readonly HttpClient _httpClient;
@@ -18,14 +18,13 @@ namespace InfoTrack.DevProject.Infrastructure.GoogleSearch
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<GoogleResult>> SearchGoogle(string searchText)
+        public async Task<List<SearchResult>> SearchAsync(string searchText, int pageEnd)
         {
-            var googleResult = new List<GoogleResult>();
+            var googleResult = new List<SearchResult>();
             var page = 0;
-            const int pageEnd = 90;
             const int pageIncrement = 10;
             var requestUri = string.Format(RequestUriTemplate, 
-                searchText.Replace(" ","+"),
+                searchText,
                 page);
 
             do
@@ -44,7 +43,7 @@ namespace InfoTrack.DevProject.Infrastructure.GoogleSearch
                         page += pageIncrement;
 
                         requestUri = string.Format(RequestUriTemplate,
-                            searchText.Replace(" ", "+"),
+                            searchText,
                             page);
                     });
 
@@ -53,7 +52,7 @@ namespace InfoTrack.DevProject.Infrastructure.GoogleSearch
             return googleResult;
         }
 
-        private IEnumerable<GoogleResult> ParseGoogleResult(string result, int pageStart)
+        private IEnumerable<SearchResult> ParseGoogleResult(string result, int pageStart)
         {
             const string htmlPattern = "<h3 class=\"r\".*</h3>";
             var regex = new Regex(htmlPattern);
@@ -65,10 +64,10 @@ namespace InfoTrack.DevProject.Infrastructure.GoogleSearch
             return googleResult;
         }
 
-        private IEnumerable<GoogleResult> MapToGoogleResult(IEnumerable matches,
+        private IEnumerable<SearchResult> MapToGoogleResult(IEnumerable matches,
             int pageStart)
         {
-            var googleResults = new List<GoogleResult>();
+            var googleResults = new List<SearchResult>();
             var rank = pageStart + 1;
 
             foreach (Match match in matches)
@@ -77,7 +76,7 @@ namespace InfoTrack.DevProject.Infrastructure.GoogleSearch
                 var regex = new Regex(urlPattern);
                 var urlMatches = regex.Matches(match.Value);
 
-                googleResults.Add(new GoogleResult
+                googleResults.Add(new SearchResult
                 {
                     Url = urlMatches.Count > 0 ? urlMatches[0].Value : string.Empty,
                     Rank = rank

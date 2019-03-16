@@ -4,22 +4,21 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using InfoTrack.DevProject.Domain.Google;
 
 namespace InfoTrack.DevProject.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IGoogleSearchService _googleSearchService;
+        private readonly ISearchService _searchService;
 
-        public HomeController(IGoogleSearchService googleSearchService)
+        public HomeController(ISearchService searchService)
         {
-            _googleSearchService = googleSearchService;
+            _searchService = searchService;
         }
 
         public IActionResult Index()
         {
-            var model = new GoogleSearchViewModel
+            var model = new SearchViewModel
             {
                 DomainUrl = "www.infotrack.com.au",
                 SearchText = "online title search"
@@ -29,23 +28,25 @@ namespace InfoTrack.DevProject.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(GoogleSearchViewModel model)
+        public async Task<IActionResult> Index(SearchViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var googleResults = await _googleSearchService.GetUrlRankings(model.SearchText, model.DomainUrl);
+            var searchResults = await _searchService.GetUrlRankingsAsync(model.SearchText, model.DomainUrl);
 
-            var rankings = googleResults as GoogleResult[] ?? googleResults.ToArray();
+            var rankings = searchResults?.ToArray();
 
             const string resultTemplate = "Ranking: {0}";
-            var ranks = rankings.Select(r => r.Rank);
+            var ranks = rankings?.Select(r => r.Rank);
 
-            ViewData["Ranking"] = rankings.Any()
+            var displayMessage = (rankings != null && rankings.Any())
                 ? string.Format(resultTemplate, string.Join(", ", ranks))
                 : string.Format(resultTemplate, 0);
+
+            model.Rankings = displayMessage;
 
             return View(model);
         }

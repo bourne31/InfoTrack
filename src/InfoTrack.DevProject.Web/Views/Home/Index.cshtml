@@ -2,7 +2,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-@model GoogleSearchViewModel
+@model SearchViewModel
 
 <div class="row">
     <div class="container text-center">
@@ -11,10 +11,10 @@
             <label asp-for="SearchText"></label>
             <input asp-for="SearchText" placeholder="Search" />
             <label asp-for="DomainUrl"></label>
-            <input asp-for="DomainUrl" placeholder="Domain url"/>
-            <input type="submit" value="Get Google Ranking"/>
+            <input asp-for="DomainUrl" placeholder="Domain url" />
+            <input type="submit" value="Get Google Ranking" />
         </form>
 
-        <h2>@ViewData["Ranking"]</h2>
+        <h2>@Model.Rankings</h2>
     </div>
 </div>

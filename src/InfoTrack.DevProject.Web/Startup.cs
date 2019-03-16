@@ -1,5 +1,6 @@
 ﻿using InfoTrack.DevProject.Application.Interfaces;
 using InfoTrack.DevProject.Application.Services;
+using InfoTrack.DevProject.Application.Services.Google;
 using InfoTrack.DevProject.Infrastructure.GoogleSearch;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,12 +31,12 @@ namespace InfoTrack.DevProject.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddHttpClient<IGoogleSearchClient, GoogleSearchClient>(c =>
+            services.AddHttpClient<ISearchClient, GoogleSearchClient>(c =>
             {
                 c.BaseAddress = new Uri("https://www.google.com.au/");
             });
 
-            services.AddScoped<IGoogleSearchService, GoogleSearchService>();
+            services.AddScoped<ISearchService, GoogleSearchService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
